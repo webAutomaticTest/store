@@ -44,10 +44,9 @@ module.exports.init = (mongoServerName, webServer) => {
 				} else {
 
 					var crawlScenario = {};
-					crawlScenario._id = ObjectID();
+					// crawlScenario._id = ObjectID();
 					crawlScenario.bid = ObjectID(req.body.bid);
 					crawlScenario.actions = req.body.scenarioActions;
-					crawlScenario.actions = req.body;
 					crawlScenario.wait = 1000;
 					crawlScenario.isCrawled = false;
 					if (!crawlScenario.cssselector) {
