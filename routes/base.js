@@ -36,6 +36,33 @@ module.exports.init = (mongoServerName, webServer) => {
 	});
 
 	webServer
+	.get('/base/:bid', (req, res) => {
+		MongoClient.connect(dbUrl)
+		.then(db => {
+			db.collection('base', {strict:true}, (err, baseCollection) => {
+				if (err) {
+					res.status(404).send(err).end();
+					db.close();
+				} else {
+					baseCollection.find({_id: new ObjectID(req.params.bid)}).toArray()
+					.then(basesArray => {
+						res.send(basesArray).status(200).end();
+						db.close();
+					})
+					.catch(err => {
+						res.status(500).send(err).end();
+						db.close();
+					});
+				}
+			});
+		})
+		.catch(err => {
+			winston.info(err);
+			res.status(500).send(err).end;
+		});
+	});
+
+	webServer
 	.post('/base', (req, res) => {
 		MongoClient.connect(dbUrl).
 		then(db => {
@@ -48,8 +75,6 @@ module.exports.init = (mongoServerName, webServer) => {
 				} else {
 
 					var baseScenario = {};
-					baseScenario._id = ObjectID();
-					baseId = baseScenario._id;
 					//set user id
 					baseScenario.uid = new ObjectID("59b93998eb13c900013461ad");
 					baseScenario.actions = req.body;
@@ -73,7 +98,7 @@ module.exports.init = (mongoServerName, webServer) => {
 					}
 
 					
-					baseCollection.findOneAndReplace({_id:baseScenario._id},baseScenario,{upsert:true})
+					baseCollection.findOneAndReplace({"actions": baseScenario.actions},baseScenario,{upsert:true})
 					.then(savedBaseScenario => {
 						res.status(200).send(savedBaseScenario).end();
 						db.close();

@@ -34,8 +34,8 @@ module.exports.init = (mongoServerName, webServer) => {
 
 	webServer
 	.post('/action', (req, res) => {
-		MongoClient.connect(dbUrl).
-		then(db => {
+		MongoClient.connect(dbUrl)
+		.then(db => {
 			db.collection('action', (err, actionCollection) => {
 				if (err) {
 					res.status(404).send(err).end();
