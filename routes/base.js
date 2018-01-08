@@ -66,8 +66,6 @@ module.exports.init = (mongoServerName, webServer) => {
 	.post('/base', (req, res) => {
 		MongoClient.connect(dbUrl).
 		then(db => {
-			// .then(database => {
-			// 	const db = database.db('wat_storage');
 			db.collection('base', (err, baseCollection) => {
 				if (err) {
 					res.status(404).send(err).end();
@@ -98,7 +96,7 @@ module.exports.init = (mongoServerName, webServer) => {
 					}
 
 					
-					baseCollection.findOneAndReplace({"actions": baseScenario.actions},baseScenario,{upsert:true})
+					baseCollection.save(baseScenario)
 					.then(savedBaseScenario => {
 						res.status(200).send(savedBaseScenario).end();
 						db.close();

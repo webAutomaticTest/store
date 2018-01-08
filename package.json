@@ -27,6 +27,7 @@
     "promise": "^8.0.1",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
+    "swagger-tools": "^0.10.3",
     "wat_action_nightmare": "^1.0.14",
     "winston": "^2.4.0",
     "yargs": "^10.0.3"
