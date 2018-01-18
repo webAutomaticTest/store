@@ -43,7 +43,10 @@ module.exports.init = (mongoServerName, webServer) => {
 					db.close();
 				} else {
 					var stepItem = {};
-					stepItem.aid = req.body._id;
+					stepItem.candidateId = ObjectID(req.body._id);
+					stepItem.bid = ObjectID(req.body.bid);
+					stepItem.preIndex = req.body.preIndex;
+					stepItem.aid = ObjectID(req.body.aid);
 					stepItem.action = req.body.action;
 					stepItem.FPCA = 0;
 					stepItem.TPCA_OUT = 0;
@@ -52,7 +55,7 @@ module.exports.init = (mongoServerName, webServer) => {
 					stepItem.probability = req.body.probability;
 					// stepItem.pSum = 0;
 
-					stepCollection.findOneAndReplace({'aid': stepItem.aid },stepItem,{ upsert: true })
+					stepCollection.findOneAndReplace({'candidateId': stepItem.candidateId },stepItem,{ upsert: true })
 					.then(savedStep => {
 						res.status(200).send(savedStep).end();
 						db.close();

@@ -45,7 +45,7 @@ module.exports.init = (mongoServerName, webServer) => {
 					var candidateItem = {};
 					candidateItem.bid = ObjectID(req.body.bid); //bid
 					candidateItem.aid = ObjectID(req.body.aid); //aid
-					candidateItem.abid = req.body.abid; //abid
+					candidateItem.preIndex = req.body.preIndex; //abid
 					candidateItem.action = req.body.candidateActionJson; //action
 					
 					candidateCollection.save(candidateItem)
