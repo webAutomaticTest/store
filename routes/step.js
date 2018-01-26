@@ -31,6 +31,96 @@ module.exports.init = (mongoServerName, webServer) => {
 			res.status(500).send(err).end;
 		});
 	});
+
+	webServer
+	.get('/step/bid', (req, res) => {
+		MongoClient.connect(dbUrl)
+		.then(db => {
+			db.collection('step', {strict:true}, async (err, stepCollection) => {
+				if (err) {
+					res.status(404).send(err).end();
+					db.close();
+				} else {					
+					var bid = new ObjectID(req.body.bid);
+
+					await stepCollection.find({ bid: bid}).toArray()
+					.then(stepArray => {
+						res.send(stepArray).status(200).end();
+						db.close();
+					})
+					.catch(err => {
+						res.status(500).send(err).end();
+						db.close();
+					});
+				}
+			});
+		})
+		.catch(err => {
+			winston.info(err);
+			res.status(500).send(err).end;
+		});
+	});
+
+	webServer
+	.get('/step/_id', (req, res) => {
+		MongoClient.connect(dbUrl)
+		.then(db => {
+			db.collection('step', {strict:true}, async (err, stepCollection) => {
+				if (err) {
+					res.status(404).send(err).end();
+					db.close();
+				} else {
+					
+					var _id = new ObjectID(req.body._id);
+					
+					await stepCollection.find({ _id: _id}).toArray()
+					.then(stepArray => {
+						res.send(stepArray).status(200).end();
+						db.close();
+					})
+					.catch(err => {
+						res.status(500).send(err).end();
+						db.close();
+					});
+				}
+			});
+		})
+		.catch(err => {
+			winston.info(err);
+			res.status(500).send(err).end;
+		});
+	});
+
+	webServer
+	.get('/step/preIndex', (req, res) => {
+		MongoClient.connect(dbUrl)
+		.then(db => {
+			db.collection('step', {strict:true}, async (err, stepCollection) => {
+				if (err) {
+					res.status(404).send(err).end();
+					db.close();
+				} else {
+					
+					var bid = new ObjectID(req.body.bid);
+					var preIndex = req.body.preIndex;
+					
+					await stepCollection.find({ bid: bid, preIndex: preIndex}).toArray()
+					.then(stepArray => {
+						res.send(stepArray).status(200).end();
+						db.close();
+					})
+					.catch(err => {
+						res.status(500).send(err).end();
+						db.close();
+					});
+				}
+			});
+		})
+		.catch(err => {
+			winston.info(err);
+			res.status(500).send(err).end;
+		});
+	});
 	
 	webServer
 	.post('/init_step', (req, res) => {
@@ -85,7 +175,12 @@ module.exports.init = (mongoServerName, webServer) => {
 					db.close();
 				} else {
 					var stepItem = req.body;
-					stepItem._id = new ObjectID(req.body._id);
+					stepItem._id = ObjectID(req.body._id);
+
+					stepItem.candidateId = ObjectID(req.body.candidateId);
+					stepItem.bid = ObjectID(req.body.bid);
+					stepItem.aid = ObjectID(req.body.aid);
+
 
 					stepCollection.findOneAndReplace({'_id': stepItem._id },stepItem,{ upsert: true })
 					.then(savedStep => {
